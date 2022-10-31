@@ -4,8 +4,8 @@ const socket = require("socket.io");
 
 const app = express();
 app.use(express.static(path.join(__dirname, "public")));
-const server = app.listen(4000, () =>
-  console.log(`Server started on http://localhost:4000`)
+const server = app.listen(process.env.PORT || 4000, () =>
+  console.log(`Server started on http://localhost:${process.env.PORT || 4000}`)
 );
 const io = socket(server);
 
@@ -35,17 +35,16 @@ io.on("connection", (socket) => {
   });
 
   // Listen for new message
-  socket.on("send-message", (message) => {
+  socket.on("send-message", ({ message, timestamp }) => {
     socket.broadcast.emit("new-message", {
-      message: message,
+      message,
       name: activeUsers.get(socket.id),
-      timestamp: Date.now()
+      timestamp
     });
   });
 
   // Listen for typing
   socket.on("typing", (data) => {
-    console.log("Typing:", data.isTyping, data.name);
     socket.broadcast.emit("typing", data);
   });
 });

@@ -1,6 +1,7 @@
-const socket = io("http://localhost:4000");
+// if url is not specified, it will connect to the same host and port as the current page
+const socket = io();
 // create new user and emit event
-const userName = prompt("Enter your name to join...");
+const userName = prompt("Enter your name to join...") || `User${Math.floor(Math.random() * 1000)}`;
 document.getElementById("username").innerHTML = userName;
 socket.emit("user-joined", userName);
 
@@ -8,19 +9,44 @@ const messageInputBox = document.querySelector(".message-input");
 const sendMessageButton = document.querySelector(".send-message-btn");
 const feedbackDiv = document.querySelector("#feedback");
 const messagesDiv = document.querySelector("#messages");
+const activeUsersDiv = document.querySelector("#active-users");
+
+let activeUsers = [];
+
+const renderActiveUsers = (activeUsers) => {
+  activeUsersDiv.innerHTML = "";
+  activeUsers.forEach((user) => {
+    activeUsersDiv.innerHTML += `<p>&#128994;${user.name}</p>`;
+  });
+};
+
+const sendMessage = (message) => {
+  if (!message) return;
+  socket.emit("send-message", { message, timestamp: Date.now() });
+  messagesDiv.innerHTML += `<p id="myMessages"><strong>${userName}: </strong>${message}</br><small>${new Date().toLocaleTimeString()}</small></p>`;
+  messageInputBox.value = "";
+  socket.emit("typing", { name: userName, isTyping: false });
+};
 
 socket.on("user-joined", (data) => {
-  console.log(data);
+  console.log(data.activeUsers);
   console.log(`${data.newUser.name} joined the chat`);
   feedbackDiv.innerHTML = `${data.newUser.name} joined the chat`;
+  // Set all active users
+  activeUsers = data.activeUsers;
+  renderActiveUsers(data.activeUsers);
 });
+
 socket.on("new-message", (data) => {
   console.log(`${data.name}: ${data.message}`);
-  // with timestamp in small font below the message
   messagesDiv.innerHTML += `<p><strong>${data.name}: </strong>${data.message}</br><small>${new Date(data.timestamp).toLocaleTimeString()}</small></p>`;
 });
+
 socket.on("user-left", (name) => {
+  console.log(`${name} left the chat`);
   feedbackDiv.innerHTML = `${name} left the chat`;
+  activeUsers = activeUsers.filter((user) => user.name !== name);
+  renderActiveUsers(activeUsers);
 });
 
 socket.on("typing", ({ name, isTyping }) => {
@@ -33,10 +59,7 @@ messageInputBox.addEventListener("keyup", (event) => {
   // if enter key is pressed, send message
   if (event.keyCode === 13) {
     const message = messageInputBox.value;
-    socket.emit("send-message", message);
-    messagesDiv.innerHTML += `<p id="myMessages"><strong>${userName}: </strong>${message}</br><small>${new Date().toLocaleTimeString()}</small></p>`;
-    messageInputBox.value = "";
-    socket.emit("typing", { name: userName, isTyping: false });
+    sendMessage(message);
   }
   socket.emit("typing", {
     name: userName,
@@ -47,13 +70,5 @@ messageInputBox.addEventListener("keyup", (event) => {
 // send message to server on click of send button
 sendMessageButton.addEventListener("click", () => {
   const message = messageInputBox.value;
-  socket.emit("send-message", message);
-  messagesDiv.innerHTML += `<p id="myMessages"><strong>${userName}: </strong>${message}</br><small>${new Date().toLocaleTimeString()}</small></p>`;
-  messageInputBox.value = "";
-  socket.emit("typing", { name: userName, isTyping: false });
-});
-
-// show active users in the chat room
-socket.on("active-users", (users) => {
-  console.log(users);
+  sendMessage(message);
 });
