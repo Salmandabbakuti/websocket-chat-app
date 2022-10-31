@@ -35,11 +35,11 @@ io.on("connection", (socket) => {
   });
 
   // Listen for new message
-  socket.on("send-message", (message) => {
+  socket.on("send-message", ({ message, timestamp }) => {
     socket.broadcast.emit("new-message", {
-      message: message,
+      message,
       name: activeUsers.get(socket.id),
-      timestamp: Date.now()
+      timestamp
     });
   });
 
