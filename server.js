@@ -19,7 +19,14 @@ io.on("connection", (socket) => {
   socket.on("user-joined", (name) => {
     console.log("User joined:", name);
     activeUsers.set(socket.id, name);
-    socket.broadcast.emit("user-joined", name);
+    socket.broadcast.emit("user-joined", {
+      newUser: { id: socket.id, name },
+      // convert map to array of objects
+      activeUsers: [...activeUsers.entries()].map(([id, name]) => ({
+        id,
+        name
+      }))
+    });
   });
 
   // Listen for user disconnect
@@ -40,7 +47,7 @@ io.on("connection", (socket) => {
   // Listen for typing
   socket.on("typing", (data) => {
     console.log("Typing:", data.isTyping, data.name);
-    socket.broadcast.emit("typing", data.name);
+    socket.broadcast.emit("typing", data);
   });
 });
 

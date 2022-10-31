@@ -6,16 +6,109 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.js"
     integrity="sha512-iWPnCISAd/J+ZacwV2mbNLCaPGRrRo5OS81lKTVPtRg1wGTC20Cfmp5Us5RcbLv42QLdbAWl0MI57yox5VecQg=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+    body {
+      font-family: 'Nunito';
+    }
+
+    h2 {
+      font-size: 18px;
+      padding: 10px 20px;
+      color: #575ed8;
+    }
+
+    #chatobox-container {
+      max-width: 40%;
+      height: 90%;
+      margin: 10px auto;
+      border: 1px solid #ddd;
+      box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.05);
+      border-radius: 2px;
+    }
+
+    #chat-window {
+      height: 400px;
+      overflow: auto;
+      background: #f9f9f9;
+    }
+
+    #messages p {
+      padding: 14px 0px;
+      margin: 0 20px;
+      border-bottom: 1px solid #e9e9e9;
+      color: #555;
+    }
+
+    /* move feedback to bottom */
+    #feedback {
+      color: #aaa;
+      padding: 14px 0px;
+      margin: 0 20px;
+      border-bottom: 1px solid #e9e9e9;
+      padding-bottom: 0px !important;
+    }
+
+    #messages strong {
+      color: #575ed8;
+    }
+
+    #myMessages {
+      padding: 14px 0px;
+      margin: 0 20px;
+      border-bottom: 1px solid #e9e9e9;
+      color: rgb(78, 158, 82);
+      text-align: right;
+    }
+
+    label {
+      box-sizing: border-box;
+      display: block;
+      padding: 10px 20px;
+    }
+
+    input {
+      padding: 10px 20px;
+      box-sizing: border-box;
+      background: #eee;
+      border: 0;
+      display: block;
+      width: 100%;
+      background: #fff;
+      border-bottom: 1px solid #eee;
+      font-family: Nunito;
+      font-size: 16px;
+    }
+
+    button {
+      background: #575ed8;
+      color: #fff;
+      font-size: 18px;
+      border: 0;
+      padding: 12px 0;
+      width: 100%;
+      border-radius: 0 0 2px 2px;
+    }
+  </style>
 </head>
 
 <body>
   <h1>Chat</h1>
   <h3 id="username">Loading</h3>
+  <div id="active-users">
+    <!-- Active user list here -->
+  </div>
   <!-- chat box container -->
-  <div id="chat-box">
-    <div id="chat-messages"></div>
-    <input type="text" class="message-input" />
-    <button class="send-message-btn">Send</button>
+  <div id="chatobox-container">
+    <div id="chat-window">
+      <div id="messages">
+        <!--Display message here-->
+      </div>
+    </div>
+    <div id="feedback">
+      <!--Display typing feedback here-->
+    </div>
+    <input type="text" class="message-input" id="message" placeholder="Message">
+    <button class="send-message-btn" id="send">Send</button>
   </div>
   <script src="/index.js"></script>
 </body>
