@@ -1,4 +1,4 @@
-const socket = io("http://localhost:4000");
+const socket = io(); // if url is not specified, it will connect to the same host and port as the current page
 // create new user and emit event
 const userName = prompt("Enter your name to join...");
 document.getElementById("username").innerHTML = userName;
