@@ -2,13 +2,14 @@
 <html>
 
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Chat App</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.js"
     integrity="sha512-iWPnCISAd/J+ZacwV2mbNLCaPGRrRo5OS81lKTVPtRg1wGTC20Cfmp5Us5RcbLv42QLdbAWl0MI57yox5VecQg=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <style>
     body {
-      font-family: 'Nunito';
+      font-family: serif, sans-serif;
     }
 
     h2 {
@@ -18,46 +19,67 @@
     }
 
     #chatobox-container {
-      max-width: 40%;
-      height: 90%;
+      max-width: 50%;
+      height: 600px;
       margin: 10px auto;
       border: 1px solid #ddd;
       box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.05);
       border-radius: 2px;
+      background-color: #1a3533;
     }
 
     #chat-window {
-      height: 400px;
+      height: 600px;
       overflow: auto;
-      background: #f9f9f9;
+      background: #1a3533;
     }
 
     #messages p {
-      padding: 14px 0px;
-      margin: 0 20px;
-      border-bottom: 1px solid #e9e9e9;
-      color: #555;
+      padding: 5px 0px;
+      margin: 0 30px;
+      color: #ddd;
     }
 
     /* move feedback to bottom */
     #feedback {
       color: #aaa;
+      background-color: #1a3533;
       padding: 14px 0px;
-      margin: 0 20px;
+      /* margin: 0 20px; */
       border-bottom: 1px solid #e9e9e9;
-      padding-bottom: 0px !important;
+      text-align: center;
     }
 
     #messages strong {
       color: #575ed8;
     }
 
-    #myMessages {
-      padding: 14px 0px;
-      margin: 0 20px;
-      border-bottom: 1px solid #e9e9e9;
-      color: rgb(78, 158, 82);
+    #messages p small {
+      font-size: 9px;
+    }
+
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin: 0 10px;
+    }
+
+    #messages #myMessage {
+      padding: 5px 0px;
+      margin: 0 30px;
+      color: #ddd;
       text-align: right;
+    }
+
+    /* group name */
+    #group-name {
+      text-align: center;
+      padding: 10px 20px;
+      color: #ddd;
+      font-size: 18px;
+      font-weight: 600;
+      background-color: rgb(35, 66, 66);
     }
 
     label {
@@ -69,13 +91,11 @@
     input {
       padding: 10px 20px;
       box-sizing: border-box;
-      background: #eee;
-      border: 0;
+      background-color: #1a3533;
+      color: #ddd;
+      border: 1px solid #ddd;
       display: block;
       width: 100%;
-      background: #fff;
-      border-bottom: 1px solid #eee;
-      font-family: Nunito;
       font-size: 16px;
     }
 
@@ -88,27 +108,60 @@
       width: 100%;
       border-radius: 0 0 2px 2px;
     }
+
+    .sidebar {
+      height: 100%;
+      width: 160px;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      background-color: #eee;
+      overflow-x: hidden;
+      padding-top: 20px;
+    }
+
+    .main {
+      margin-left: 160px;
+      /* Increased text to enable scrolling */
+      padding: 0px 10px;
+    }
+
+    @media screen and (max-height: 450px) {
+      .sidebar {
+        padding-top: 15px;
+      }
+    }
   </style>
 </head>
 
 <body>
-  <h1>Chat - <b id="username">Loading</b></h1>
-  <h3>Active</h3>
-  <div id="active-users">
-    <!-- Active user list here -->
+  <div class="sidebar">
+    <h1>Chat App</h1>
+    <img src="https://joeschmoe.io/api/v1/random" alt="user-profile" />
+    </br>
+    <b id="username">Loading</b>
+    <h3>Active</h3>
+    <div id="active-users">
+      <!-- Active user list here -->
+    </div>
   </div>
   <!-- chat box container -->
-  <div id="chatobox-container">
-    <div id="chat-window">
-      <div id="messages">
-        <!--Display message here-->
+  <div class="main">
+    <div id="chatobox-container">
+      <!-- Group Name -->
+      <h2 id="group-name">Developers Hub</h2>
+      <div id="chat-window">
+        <div id="messages">
+          <!--Display message here-->
+        </div>
       </div>
+      <div id="feedback">
+        <!--Display typing feedback here-->
+      </div>
+      <input type="text" class="message-input" id="message" placeholder="Message">
+      <button class="send-message-btn" id="send">Send</button>
     </div>
-    <div id="feedback">
-      <!--Display typing feedback here-->
-    </div>
-    <input type="text" class="message-input" id="message" placeholder="Message">
-    <button class="send-message-btn" id="send">Send</button>
   </div>
   <script src="/index.js"></script>
 </body>

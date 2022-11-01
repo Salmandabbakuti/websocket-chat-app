@@ -16,14 +16,15 @@ let activeUsers = [];
 const renderActiveUsers = (activeUsers) => {
   activeUsersDiv.innerHTML = "";
   activeUsers.forEach((user) => {
-    activeUsersDiv.innerHTML += `<p>&#128994;${user.name}</p>`;
+    if (user.name === userName) activeUsersDiv.innerHTML += `<p>&#128994;You</p>`;
+    else activeUsersDiv.innerHTML += `<p>&#128994;${user.name}</p>`;
   });
 };
 
 const sendMessage = (message) => {
   if (!message) return;
   socket.emit("send-message", { message, timestamp: Date.now() });
-  messagesDiv.innerHTML += `<p id="myMessages"><strong>${userName}: </strong>${message}</br><small>${new Date().toLocaleTimeString()}</small></p>`;
+  messagesDiv.innerHTML += `<p id="myMessage"><strong>You</strong></br>${message}</br><small>${new Date().toLocaleTimeString()}</small></p>`;
   messageInputBox.value = "";
   socket.emit("typing", { name: userName, isTyping: false });
 };
@@ -39,7 +40,7 @@ socket.on("user-joined", (data) => {
 
 socket.on("new-message", (data) => {
   console.log(`${data.name}: ${data.message}`);
-  messagesDiv.innerHTML += `<p><strong>${data.name}: </strong>${data.message}</br><small>${new Date(data.timestamp).toLocaleTimeString()}</small></p>`;
+  messagesDiv.innerHTML += `<p><strong>${data.name}</br></strong>${data.message}</br><small>${new Date(data.timestamp).toLocaleTimeString()}</small></p>`;
 });
 
 socket.on("user-left", (name) => {

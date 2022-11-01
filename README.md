@@ -14,4 +14,4 @@ npm run dev
 
 #### Demo:
 
-![Demo](https://j.gifs.com/w0w22m.gif)
+![Demo](https://j.gifs.com/Brm97n.gif)
